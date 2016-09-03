@@ -18,4 +18,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 uint256 GetBlockProof(const CBlockIndex& block);
 
+/** Kimoto Gravity Well */
+unsigned int KimotoGravityWell(const CBlockIndex* pindexLast);
+//unsigned int GetNextWorkRequired_V1(const CBlockIndex* pindexLast, const CBlock *pblock);
+//unsigned int GetNextWorkRequired_V2(const CBlockIndex* pindexLast, const CBlock *pblock);
+
 #endif // BITCOIN_POW_H

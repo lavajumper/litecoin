@@ -23,6 +23,8 @@
 #include <sstream>
 
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/thread.hpp>
@@ -31,7 +33,7 @@ using namespace boost;
 using namespace std;
 
 #if defined(NDEBUG)
-# error "Litecoin cannot be compiled without assertions."
+# error "Sexcoin cannot be compiled without assertions."
 #endif
 
 /**
@@ -73,7 +75,7 @@ static void CheckBlockIndex();
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "Litecoin Signed Message:\n";
+const string strMessageMagic = "Sexcoin Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -913,7 +915,7 @@ CAmount GetMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowF
             return 0;
     }
 
-    // Litecoin
+    // Sexcoin
     // To limit dust spam, add 1000 byte penalty for each output smaller than DUST_THRESHOLD
     BOOST_FOREACH(const CTxOut& txout, tx.vout)
         if (txout.nValue < DUST_THRESHOLD)
@@ -1240,16 +1242,49 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex)
     return true;
 }
 
+int static generateMTRandom(int s, int range)
+{
+    boost::mt19937 gen(s);
+    uniform_int<> dist(1,range);
+    return dist(gen);
+}
+
 CAmount GetBlockValue(int nHeight, const CAmount& nFees)
 {
-    CAmount nSubsidy = 50 * COIN;
+    // NOTE: It will cause a hardfork, but we could introduce actual
+    //       randomness to the superblock calculation to prevent pre-
+    //       calculation of which blocks in the blockchain will be
+    //       superblocks.
+    //       Incorporating something unkown and unpredictable such as
+    //       the blocktime or block hash of the previous block should
+    //       suffice.
+    
+    CAmount nSubsidy = 100 * COIN;
     int halvings = nHeight / Params().SubsidyHalvingInterval();
 
     // Force block reward to zero when right shift is undefined.
     if (halvings >= 64)
         return nFees;
+    
+    // Premine bounties
+    if(nHeight < 3) { // Block 1 and 2 get 1 Million SXC each
+        nSubsidy = 1000000 * COIN;
+    } else if(nHeight < 5001) { // Block 3 through 5000 get 200 SXC
+        nSubsidy = 200 * COIN;
+    }
 
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+    // Superblock random reward
+    // A psuedo-random pattern is used to select "super blocks" which
+    // getet either 50x or 5x normal subsidy
+    int rand = generateMTRandom(nHeight, 100000);
+
+    if(rand > 99990) {
+        nSubsidy *= 50;
+    } else if (rand < 2001) {
+        nSubsidy *= 5 ;
+    }
+    
+    // Subsidy is cut in half every 600,000 blocks.
     nSubsidy >>= halvings;
 
     return nSubsidy + nFees;
@@ -1646,7 +1681,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("litecoin-scriptch");
+    RenameThread("sexcoin-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2532,11 +2567,14 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     int nHeight = pindexPrev->nHeight+1;
 
     // Check proof of work
-    if ((!Params().SkipProofOfWorkCheck()) &&
-       (block.nBits != GetNextWorkRequired(pindexPrev, &block)))
+    /** TODO: this needs fixed for sexcoin...
+    
+    /*if ((!Params().SkipProofOfWorkCheck()) &&
+       (block.nBits < GetNextWorkRequired(pindexPrev, &block)))
         return state.DoS(100, error("%s : incorrect proof of work", __func__),
                          REJECT_INVALID, "bad-diffbits");
-
+    */
+    
     // Check timestamp against prev
     if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
         return state.Invalid(error("%s : block's timestamp is too early", __func__),
@@ -2569,7 +2607,10 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
                 enforceV2 = true;
         }
     }
-
+    
+    // Sexcoin: forget this v2 enforcement for the moment...right now they are all V1 and we're jumping straight to V4
+    enforceV2=false;
+    /*
     if (enforceV2)
     {
         return state.Invalid(error("%s : rejected nVersion=1 block", __func__),
@@ -2587,7 +2628,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     if (block.nVersion < 4 && CBlockIndex::IsSuperMajority(4, pindexPrev, Params().RejectBlockOutdatedMajority()))
         return state.Invalid(error("%s : rejected nVersion=3 block", __func__),
                              REJECT_OBSOLETE, "bad-version");
-
+    */
     return true;
 }
 
@@ -2650,8 +2691,10 @@ bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state, CBloc
         return true;
     }
 
-    if (!CheckBlockHeader(block, state))
+    if (!CheckBlockHeader(block, state)){
+        LogPrint("main","CheckBlockHeader Failed.");
         return false;
+    }
 
     // Get prev block index
     CBlockIndex* pindexPrev = NULL;
@@ -2664,8 +2707,10 @@ bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state, CBloc
             return state.DoS(100, error("%s : prev block invalid", __func__), REJECT_INVALID, "bad-prevblk");
     }
 
-    if (!ContextualCheckBlockHeader(block, state, pindexPrev))
+    if (!ContextualCheckBlockHeader(block, state, pindexPrev)){
+        LogPrint("main","ContextualCheckBlockHeader Failed.");
         return false;
+    }
 
     if (pindex == NULL)
         pindex = AddToBlockIndex(block);
@@ -4167,6 +4212,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 return error("non-continuous headers sequence");
             }
             if (!AcceptBlockHeader(header, state, &pindexLast)) {
+                LogPrintf("net","Invalid header: (version %d)", header.nVersion);
                 int nDoS;
                 if (state.IsInvalid(nDoS)) {
                     if (nDoS > 0)

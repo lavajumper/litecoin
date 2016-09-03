@@ -4,7 +4,7 @@ if [ -d "$1" ]; then
   cd "$1"
 else
   echo "Usage: $0 <datadir>" >&2
-  echo "Removes obsolete Bitcoin database files" >&2
+  echo "Removes obsolete Sexcoin database files" >&2
   exit 1
 fi
 
