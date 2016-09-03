@@ -55,7 +55,7 @@ lots of money.
 
 Large changes should have a test plan, and should be tested by somebody other
 than the developer who wrote the code.
-Creating a thread in the [Sexcoin discussion forum](https://sexcoinforum.com) will allow the Sexcoin
+Creating a thread in the [Sexcoin discussion forum](http://sexcoinforum.com) will allow the Sexcoin
 development team members to review your proposal and to provide assistance with creating a test plan. 
 
 
