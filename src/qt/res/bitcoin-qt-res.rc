@@ -1,6 +1,6 @@
 IDI_ICON1 ICON DISCARDABLE "icons/sexcoin3.ico"
 IDI_ICON2 ICON DISCARDABLE "icons/bitcoin_testnet.ico"
-//IDI_ICON2 ICON DISCARDABLE "icons/sexcoin_final_ga.png"
+//IDI_ICON2 ICON DISCARDABLE "icons/sxcoin_final_ga.png"
 
 #include <windows.h>             // needed for VERSIONINFO
 #include "../../clientversion.h" // holds the needed client version information
