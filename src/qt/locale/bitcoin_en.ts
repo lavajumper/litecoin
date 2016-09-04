@@ -1708,7 +1708,7 @@ Address: %4
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../sexcoinunits.cpp" line="+194"/>
+        <location filename="../bitcoinunits.cpp" line="+194"/>
         <source>Amount</source>
         <translation type="unfinished">Amount</translation>
     </message>
@@ -3512,7 +3512,7 @@ Address: %4
 <context>
     <name>UnitDisplayStatusBarControl</name>
     <message>
-        <location filename="../sexcoingui.cpp" line="+106"/>
+        <location filename="../bitcoingui.cpp" line="+106"/>
         <source>Unit to show amounts in. Click to select another unit.</source>
         <translation type="unfinished"></translation>
     </message>
