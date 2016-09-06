@@ -3,6 +3,17 @@ Sexcoin Core integration/staging tree
 
 https://sexcoin.info
 
+CAUTION: this is the current development tree. 
+
+DO NOT USE THIS FOR PRODUCTION!!
+
+- Block chain successfully downloads/synchronizes
+- Incoming (simple) transactions are successful
+- Outgoing (simple) transactions are successful
+- Coin control appears to be working
+
+DO NOT USE THIS FOR PRODUCTION!!
+
 What is Sexcoin?
 ----------------
 
