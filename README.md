@@ -6,6 +6,7 @@ https://sexcoin.info
 CAUTION: this is the current development tree. 
 
 DO NOT USE THIS FOR PRODUCTION!!
+--------------------------------
 
 - Block chain successfully downloads/synchronizes
 - Incoming (simple) transactions are successful
@@ -13,6 +14,8 @@ DO NOT USE THIS FOR PRODUCTION!!
 - Coin control appears to be working
 
 DO NOT USE THIS FOR PRODUCTION!!
+--------------------------------
+
 
 What is Sexcoin?
 ----------------
