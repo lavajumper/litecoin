@@ -142,7 +142,7 @@ public:
         nMinerThreads = 0;
         nTargetTimespan = 8 * 60 * 60; // 8 hour
         nTargetSpacing = 1 * 60; // 1 minute
-        //nMaxTipAge = 24 * 60 * 60;
+        nMaxTipAge = 24 * 60 * 60; // 1 day
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
@@ -218,8 +218,8 @@ public:
     CTestNetParams() {
         networkID = CBaseChainParams::TESTNET;
         strNetworkID = "test";
-        pchMessageStart[0] = 0xfc;
-        pchMessageStart[1] = 0xc1;
+        pchMessageStart[0] = 0xfa;
+        pchMessageStart[1] = 0xce;
         pchMessageStart[2] = 0xb7;
         pchMessageStart[3] = 0xdc;
         vAlertPubKey = ParseHex("0449623fc74489a947c4b15d579115591add020e53b3490bf47297dfa3762250625f8ecc2fb4fc59f69bdce8f7080f3167808276ed2c79d297054367566038aa82");
@@ -279,7 +279,7 @@ public:
         networkID = CBaseChainParams::REGTEST;
         strNetworkID = "regtest";
         pchMessageStart[0] = 0xfa;
-        pchMessageStart[1] = 0xbf;
+        pchMessageStart[1] = 0xce;
         pchMessageStart[2] = 0xb5;
         pchMessageStart[3] = 0xda;
         nSubsidyHalvingInterval = 150;
@@ -327,7 +327,7 @@ public:
     CUnitTestParams() {
         networkID = CBaseChainParams::UNITTEST;
         strNetworkID = "unittest";
-        nDefaultPort = 18445;
+        nDefaultPort = 18569;
         vFixedSeeds.clear(); //! Unit test mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Unit test mode doesn't have any DNS seeds.
 

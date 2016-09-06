@@ -2567,13 +2567,21 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     int nHeight = pindexPrev->nHeight+1;
 
     // Check proof of work
-    /** TODO: this needs fixed for sexcoin...
     
-    /*if ((!Params().SkipProofOfWorkCheck()) &&
-       (block.nBits < GetNextWorkRequired(pindexPrev, &block)))
-        return state.DoS(100, error("%s : incorrect proof of work", __func__),
+    // Only check KGW POW every 8000 blocks when downloading new chain...
+    if( nHeight > 156000 && nHeight < 1865000 ){
+        if( nHeight % 8000 == 0){
+           if (block.nBits != GetNextWorkRequired(pindexPrev, &block))
+                return state.DoS(100, error("%s : incorrect proof of work", __func__),
                          REJECT_INVALID, "bad-diffbits");
-    */
+        }
+
+    }else{
+        if ((!Params().SkipProofOfWorkCheck()) &&
+            (block.nBits != GetNextWorkRequired(pindexPrev, &block)))
+                return state.DoS(100, error("%s : incorrect proof of work", __func__),
+                         REJECT_INVALID, "bad-diffbits");
+    }
     
     // Check timestamp against prev
     if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())

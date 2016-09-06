@@ -8,6 +8,7 @@
 #define SEXCOIN_FORK_PARAMS_H
 
 #include "main.h"
+#include "util.h"
 
 using namespace std;
 
@@ -24,11 +25,13 @@ using namespace std;
 class CForkParams {
     public:
         CForkParams();
-        int64_t Timespan() const;
-        int64_t Spacing() const;
-        int64_t Interval() const;
+        int64_t Timespan(int64_t height) const;
+        int64_t Spacing(int64_t height) const;
+        int64_t Interval(int64_t height) const;
         int64_t KGWHeight() const;
         int64_t KGWTimeWarpFixHeight() const;
+
+        
     protected:
         // Timespan and Spacing values are moved here from global vars in main.cpp
 
@@ -50,6 +53,9 @@ class CForkParams {
 
         // When to switch to Anti-TimeWarp Attack KGW Algorithm
         int64_t nKGWTimeWarpFixHeight;
+        
+        // Used to set the height to check
+
 };
 
 /*

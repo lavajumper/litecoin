@@ -6,6 +6,7 @@
 
 #include "forkparams.h"
 #include "main.h"
+#include "util.h"
 
 using namespace std;
 
@@ -38,23 +39,23 @@ CForkParams::CForkParams() {
         nKGWTimeWarpFixHeight = FORK3_HEIGHT; // when to use "fixed" KGW algo code
 }
 
-int64_t CForkParams::Timespan() const {
-    //int64_t height=GetHeight();
-    int64_t height=chainActive.Height();
-    if ( height >= FORK1_HEIGHT ) { return nTargetTimespan_Fork1; }
-    if ( height >= FORK2_HEIGHT ) { return nTargetTimespan_Fork2; }
+int64_t CForkParams::Timespan(int64_t height) const {
+    //int64_t height=chainActive.Height();
+    //LogPrintf("CForkParams: height = %d\n", height);
+    if ( height > FORK1_HEIGHT ) { return nTargetTimespan_Fork1; }
+    if ( height > FORK2_HEIGHT ) { return nTargetTimespan_Fork2; }
     return nTargetTimespan;
 }
 
-int64_t CForkParams::Spacing() const {
-    //int64_t height=GetHeight();
-    int64_t height=chainActive.Height();
-    if  ( height >= FORK1_HEIGHT ) { return nTargetSpacing_Fork1; }
-    if  ( height >= FORK2_HEIGHT ) { return nTargetSpacing_Fork2; }
+int64_t CForkParams::Spacing(int64_t height) const {
+    //int64_t height=chainActive.Height();
+    if  ( height > FORK1_HEIGHT ) { return nTargetSpacing_Fork1; }
+    if  ( height > FORK2_HEIGHT ) { return nTargetSpacing_Fork2; }
     return nTargetSpacing;
 }
 
-int64_t CForkParams::Interval() const { return Timespan()/Spacing(); }
+
+int64_t CForkParams::Interval(int64_t height) const { return Timespan(height)/Spacing(height); }
 int64_t CForkParams::KGWHeight() const { return nKGWHeight; }
 int64_t CForkParams::KGWTimeWarpFixHeight() const { return nKGWTimeWarpFixHeight; }
 
